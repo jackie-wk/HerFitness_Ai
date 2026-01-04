@@ -1,16 +1,16 @@
 import user;
 import nutrition;
-import cycler_rules;
-import from byllm.llm { Model };
+import cycle_rules;
+import from byllm.llm { Model }
 
 glob llm = Model(model_name="gemini-pro", temperature=0.2);
 
 def generate_plan(
-    user: GymWoman
-) -> NutritionPlan by llm();
+    user: user.GymWoman
+) -> nutrition.NutritionPlan by llm();
 
 with entry {
-    u = GymWoman(
+    u = user.GymWoman(
         age=25,
         height_cm=165,
         weight_kg=70,

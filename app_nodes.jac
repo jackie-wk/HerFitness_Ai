@@ -47,3 +47,23 @@ node LLMExplainer {
         py { from wellness_llm import explain_with_gemini; print(explain_with_gemini({ "workout": workout_plan, "food": food_plan, "phase": "Phase" })) }
     }
 }
+
+// conceptual
+node CycleRules {
+    can determine_phase(day_in_cycle: int) -> str { ... }    
+    can energy_profile(phase: str) -> str { ... }           
+}
+
+// A walker that visits a CycleRules node and invokes actions
+walker PhaseWalker {
+    has int day;
+    can run() -> dict {
+        // find or be placed on a CycleRules node, then call actions
+        $phase = this.node().determine_phase(this.day);      // walker invokes node actions
+        $energy = this.node().energy_profile($phase);
+        return {"phase": $phase, "energy_profile": $energy};
+    }
+}
+
+// Graph holds node instances; agents = nodes (CycleRules instances) that own actions/state
+// Walkers run on the graph to produce outcomes or mutate nodes.
