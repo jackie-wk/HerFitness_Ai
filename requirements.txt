@@ -1,0 +1,11 @@
+# Project Python dependencies
+# Add packages one per line. Core app requirements below.
+fastapi
+uvicorn[standard]
+jinja2
+numpy
+pandas
+requests
+httpx
+google-generativeai
+python-dotenv

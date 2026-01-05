@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "HerFitness",
+    "slug": "herfitness",
+    "version": "1.0.0",
+    "scheme": "herfitness",
+    "platforms": ["web"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    }
+  }
+}

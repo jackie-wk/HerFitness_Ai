@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HerFitness AI - Mobile App</title>
+  <link rel="stylesheet" href="css/design-system.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      background-color: #FAFAFA;
+      color: #1F1F1F;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      background: white;
+      min-height: 100vh;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 24px 16px 16px;
+      background: linear-gradient(135deg, #6B4C9A 0%, #FFB3D9 100%);
+      color: white;
+    }
+
+    .title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 16px;
+      overflow-y: auto;
+      height: calc(100vh - 72px);
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid #EEEEEE;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .status-card {
+      border-left: 4px solid;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-card.online {
+      border-left-color: #9B7EBD;
+      background: #F5F0FB;
+    }
+
+    .status-card.offline {
+      border-left-color: #FFB3D9;
+      background: #FFF0F8;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-dot.online {
+      background: #9B7EBD;
+    }
+
+    .status-dot.offline {
+      background: #FFB3D9;
+    }
+
+    .status-text {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #1F1F1F;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1F1F1F;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #EEEEEE;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      color: #1F1F1F;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #E63946;
+      box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+    }
+
+    .button {
+      width: 100%;
+      padding: 16px;
+      background: #6B4C9A;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: background 0.3s;
+    }
+
+    .button:hover:not(:disabled) {
+      background: #5A3A87;
+    }
+
+    .button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .error-message {
+      background: #FFE0F0;
+      color: #C2185B;
+      padding: 12px;
+      border-radius: 8px;
+      border-left: 4px solid #FFB3D9;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .success-message {
+      background: #F0F9FF;
+      color: #6B4C9A;
+      padding: 12px;
+      border-radius: 8px;
+      border-left: 4px solid #9B7EBD;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .phase-box {
+      border-left: 4px solid;
+      padding-left: 12px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+
+    .phase-name {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .phase-days {
+      font-size: 12px;
+      color: #757575;
+      margin-bottom: 8px;
+    }
+
+    .phase-tip {
+      font-size: 13px;
+      color: #1F1F1F;
+      margin: 4px 0;
+    }
+
+    .plan-text {
+      background: #F5F5F5;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 22px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Chat UI */
+    .chat-btn {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      padding: 0;
+      font-size: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .chat-modal {
+      position: fixed;
+      right: 16px;
+      bottom: 96px;
+      width: 360px;
+      max-width: 92%;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      overflow: hidden;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      padding: 12px 16px;
+      background: linear-gradient(135deg,#6B4C9A,#FFB3D9);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-title { font-weight: 700; }
+    .chat-close { background: transparent; border: none; color: white; font-size: 18px; cursor: pointer; }
+
+    .chat-body { padding: 12px; height: 220px; overflow: auto; background: #FFF7FB; }
+
+    .chat-message { margin-bottom: 8px; }
+    .chat-message.user { text-align: right; }
+
+    .chat-bubble { display: inline-block; padding: 8px 12px; border-radius: 12px; max-width: 80%; font-size: 14px; }
+    .chat-bubble.user { background: #6B4C9A; color: white; }
+    .chat-bubble.assistant { background: #F5F0FB; color: #1F1F1F; }
+
+    .chat-name-input { padding: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">HerFitness AI</div>
+      <div class="subtitle">Female-Focused Fitness App</div>
+    </div>
+
+    <div class="content">
+      <!-- Status -->
+      <div id="statusCard" class="card status-card">
+        <div id="statusDot" class="status-dot online"></div>
+        <div id="statusText" class="status-text">✓ Connected</div>
+      </div>
+
+      <!-- Profile Form -->
+      <div class="card">
+        <div class="card-title">Your Profile</div>
+        
+        <div class="form-group">
+          <label class="form-label">Age</label>
+          <input type="number" id="age" class="form-input" value="25" min="13" max="80">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Height (cm)</label>
+          <input type="number" id="height" class="form-input" value="165" min="120" max="220">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Weight (kg)</label>
+          <input type="number" id="weight" class="form-input" value="70" min="30" max="200">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Fitness Goal</label>
+          <input type="text" id="goal" class="form-input" value="fat loss">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Workout Days/Week</label>
+          <input type="number" id="workout_days" class="form-input" value="4" min="1" max="7">
+        </div>
+      </div>
+
+      <!-- Generate Plan Button -->
+      <button id="generateBtn" class="button" onclick="generatePlan()">Generate Wellness Plan</button>
+
+      <!-- Messages -->
+      <div id="errorMsg" class="error-message hidden"></div>
+      <div id="successMsg" class="success-message hidden"></div>
+
+      <!-- Plan Display -->
+      <div id="planContainer" class="card hidden">
+        <div class="card-title">Your Wellness Plan</div>
+        <div id="planContent" class="plan-text"></div>
+      </div>
+
+      <!-- Cycle Info -->
+      <div class="card">
+        <div class="card-title">Menstrual Cycle Phases</div>
+        
+        <div class="phase-box" style="border-left-color: #FFB3D9;">
+          <div class="phase-name" style="color: #FFB3D9;">Menstrual</div>
+          <div class="phase-days">Days 1-5</div>
+          <div class="phase-tip">• Low intensity workouts</div>
+          <div class="phase-tip">• Iron-rich foods</div>
+          <div class="phase-tip">• Focus on recovery</div>
+        </div>
+
+        <div class="phase-box" style="border-left-color: #9B7EBD;">
+          <div class="phase-name" style="color: #9B7EBD;">Follicular</div>
+          <div class="phase-days">Days 6-14</div>
+          <div class="phase-tip">• High-intensity training</div>
+          <div class="phase-tip">• Build strength</div>
+          <div class="phase-tip">• Increased energy</div>
+        </div>
+
+        <div class="phase-box" style="border-left-color: #FFB3D9;">
+          <div class="phase-name" style="color: #FFB3D9;">Ovulation</div>
+          <div class="phase-days">Days 15-17</div>
+          <div class="phase-tip">• Peak performance</div>
+          <div class="phase-tip">• HIIT workouts</div>
+          <div class="phase-tip">• Best time for PRs</div>
+        </div>
+
+        <div class="phase-box" style="border-left-color: #6B4C9A;">
+          <div class="phase-name" style="color: #6B4C9A;">Luteal</div>
+          <div class="phase-days">Days 18-28</div>
+          <div class="phase-tip">• Steady workouts</div>
+          <div class="phase-tip">• Higher calories needed</div>
+          <div class="phase-tip">• Recovery focus</div>
+        </div>
+      </div>
+
+      <div style="height: 32px;"></div>
+    </div>
+  </div>
+
+    <!-- Chat UI: floating button + modal -->
+    <button id="chatBtn" class="button chat-btn" onclick="openChat()">Chat</button>
+
+    <div id="chatModal" class="chat-modal hidden">
+      <div class="chat-header">
+        <div class="chat-title">HerFitness Assistant</div>
+        <button class="chat-close" onclick="closeChat()">✕</button>
+      </div>
+      <div class="chat-body" id="chatBody"></div>
+      <div class="chat-footer" style="padding:12px;">
+        <input id="nameInput" class="form-input chat-name-input" placeholder="Your name (optional)" />
+        <div style="height:8px"></div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input id="chatInput" class="form-input" placeholder="Say something..." onkeydown="if(event.key==='Enter'){sendChat()}" />
+          <button class="button" onclick="sendChat()">Send</button>
+        </div>
+      </div>
+    </div>
+
+  <script>
+    const API_URL = 'http://192.168.100.49:8000';
+
+    // Check connection on load
+    window.addEventListener('load', checkConnection);
+
+    async function checkConnection() {
+      try {
+        const response = await fetch(`${API_URL}/health`, { method: 'GET' });
+        const isOnline = response.ok;
+        updateStatus(isOnline);
+      } catch (error) {
+        updateStatus(false);
+      }
+    }
+
+    function updateStatus(isOnline) {
+      const statusCard = document.getElementById('statusCard');
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
+      const generateBtn = document.getElementById('generateBtn');
+
+      if (isOnline) {
+        statusCard.classList.remove('offline');
+        statusCard.classList.add('online');
+        statusDot.classList.remove('offline');
+        statusDot.classList.add('online');
+        statusText.textContent = '✓ Connected to backend';
+        generateBtn.disabled = false;
+      } else {
+        statusCard.classList.remove('online');
+        statusCard.classList.add('offline');
+        statusDot.classList.remove('online');
+        statusDot.classList.add('offline');
+        statusText.textContent = '✗ Offline - Backend unavailable';
+        generateBtn.disabled = true;
+      }
+    }
+
+    async function generatePlan() {
+      const age = document.getElementById('age').value;
+      const height_cm = document.getElementById('height').value;
+      const weight_cm = document.getElementById('weight').value;
+      const goal = document.getElementById('goal').value;
+      const workout_days = document.getElementById('workout_days').value;
+
+      const profile = {
+        age: Number(age),
+        height_cm: Number(height_cm),
+        weight_cm: Number(weight_cm),
+        goal,
+        workout_days: Number(workout_days),
+      };
+
+      const generateBtn = document.getElementById('generateBtn');
+      const errorMsg = document.getElementById('errorMsg');
+      const planContainer = document.getElementById('planContainer');
+      const planContent = document.getElementById('planContent');
+
+      errorMsg.classList.add('hidden');
+      planContainer.classList.add('hidden');
+
+      generateBtn.disabled = true;
+      generateBtn.innerHTML = '<div class="loading"></div>';
+
+      try {
+        const response = await fetch(`${API_URL}/generate_plan`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(profile),
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          errorMsg.textContent = `Error: ${data.error}`;
+          errorMsg.classList.remove('hidden');
+        } else if (data.plan) {
+          planContent.textContent = data.plan;
+          planContainer.classList.remove('hidden');
+        }
+      } catch (error) {
+        errorMsg.textContent = `Error: ${error.message}`;
+        errorMsg.classList.remove('hidden');
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.textContent = 'Generate Wellness Plan';
+      }
+    }
+
+    // --- Chat UI / Personalization ---
+    let chatFirstOpened = false;
+
+    window.addEventListener('load', () => { initChat(); });
+
+    function initChat() {
+      const saved = localStorage.getItem('hf_name');
+      if (saved) document.getElementById('nameInput').value = saved;
+    }
+
+    function openChat() {
+      const modal = document.getElementById('chatModal');
+      modal.classList.remove('hidden');
+      document.getElementById('chatInput').focus();
+      if (!chatFirstOpened) {
+        const name = localStorage.getItem('hf_name');
+        appendMessage('assistant', `Hey ${name || 'there'} — I'm your HerFitness Assistant. How can I help you today?`);
+        chatFirstOpened = true;
+      }
+    }
+
+    function closeChat() {
+      const modal = document.getElementById('chatModal');
+      modal.classList.add('hidden');
+    }
+
+    function appendMessage(who, text) {
+      const body = document.getElementById('chatBody');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'chat-message ' + (who === 'user' ? 'user' : 'assistant');
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble ' + (who === 'user' ? 'user' : 'assistant');
+      bubble.textContent = text;
+      wrapper.appendChild(bubble);
+      body.appendChild(wrapper);
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function sendChat() {
+      const input = document.getElementById('chatInput');
+      const nameInput = document.getElementById('nameInput');
+      const text = input.value && input.value.trim();
+      if (!text) return;
+
+      const name = nameInput.value && nameInput.value.trim();
+      if (name) localStorage.setItem('hf_name', name);
+
+      appendMessage('user', text);
+      input.value = '';
+
+      // show a small thinking indicator
+      appendMessage('assistant', '...');
+      const body = document.getElementById('chatBody');
+      const loading = body.lastChild;
+
+      // Simulate assistant reply (replace with backend call if available)
+      setTimeout(() => {
+        if (loading) loading.remove();
+        const reply = getAssistantReply(text, name || localStorage.getItem('hf_name'));
+        appendMessage('assistant', reply);
+      }, 700);
+    }
+
+    function getAssistantReply(userMessage, name) {
+      const msg = userMessage.toLowerCase();
+      if (msg.includes('plan') || msg.includes('wellness')) {
+        return `Sure ${name || ''}. You can tap "Generate Wellness Plan" on the main screen to create a plan tailored to you.`.trim();
+      }
+      if (msg.includes('cycle') || msg.includes('period') || msg.includes('luteal') ) {
+        return `I can show cycle-aware suggestions — during luteal phase try steady workouts and extra recovery. Want tips for nutrition?`;
+      }
+      if (msg.includes('workout') || msg.includes('exercise')) {
+        return `Great question${name ? ' ' + name : ''}! For your goal, try mixing strength + HIIT across ${document.getElementById('workout_days').value} days/week.`;
+      }
+      if (msg.includes('hi') || msg.includes('hello') || msg.includes('hey')) {
+        return `Hey ${name || 'there'} — how can I help with your fitness today?`;
+      }
+      return `Thanks${name ? ' ' + name : ''}! I got that. Tell me more or try asking about a plan, workouts, or your cycle.`;
+    }
+  </script>
+</body>
+</html>
