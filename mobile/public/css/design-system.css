@@ -1,0 +1,334 @@
+/* Design System - Colors */
+:root {
+  /* Primary */
+  --color-primary-dark: #6B4C9A;
+  --color-primary-light: #9B7EBD;
+  --color-accent-pink: #FFB3D9;
+  --color-accent-hot: #FF69B4;
+  
+  /* Cycle Phases */
+  --color-phase-menstrual: #FFB3D9;
+  --color-phase-follicular: #9B7EBD;
+  --color-phase-ovulation: #FFB3D9;
+  --color-phase-luteal: #6B4C9A;
+  
+  /* UI */
+  --color-bg-light: #FAFAFA;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-overlay: #F5F0FB;
+  --color-text-primary: #1F1F1F;
+  --color-text-secondary: #757575;
+  --color-border: #EEEEEE;
+  
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-xxl: 32px;
+  
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  
+  /* Shadows */
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-elevation: 0 0 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  background-color: var(--color-bg-light);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+
+/* Utility Classes */
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text-h1 {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.text-h2 {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.33;
+}
+
+.text-h3 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.text-body {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.text-caption {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.33;
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+/* Phase-Aware Styles */
+.luteal-phase {
+  background-color: #FFF0F8;
+  border-color: var(--color-accent-pink);
+}
+
+.follicular-phase {
+  background-color: #F5F0FB;
+  border-color: var(--color-primary-light);
+}
+
+.ovulation-phase {
+  background-color: #FFF0F8;
+  border-color: var(--color-accent-pink);
+}
+
+.menstrual-phase {
+  background-color: #FFF0F8;
+  border-color: var(--color-accent-pink);
+}
+
+/* Card Component */
+.card {
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-elevation);
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-md);
+}
+
+/* Button Component */
+.btn {
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.btn-primary {
+  background: var(--color-primary-dark);
+  color: white;
+  width: 100%;
+  padding: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #5A3A87;
+  transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-primary-dark);
+  border: 2px solid var(--color-primary-dark);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+  color: white;
+}
+
+/* Form Component */
+.form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--color-text-primary);
+  transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-primary-dark);
+  box-shadow: 0 0 0 3px rgba(107, 76, 154, 0.1);
+}
+
+/* Badge Component */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-online {
+  background-color: #F0FFF4;
+  color: #22863A;
+  border-left: 3px solid #28A745;
+}
+
+.badge-offline {
+  background-color: #FFF0F0;
+  color: #CB2431;
+  border-left: 3px solid #FFB3D9;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot.online {
+  background: #28A745;
+}
+
+.status-dot.offline {
+  background: #FFB3D9;
+}
+
+/* Modal/Overlay */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  max-width: 480px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Tab Navigation */
+.tab-nav {
+  display: flex;
+  gap: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-lg);
+}
+
+.tab-btn {
+  padding: var(--space-md) var(--space-lg);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+  color: var(--color-primary-dark);
+  border-bottom-color: var(--color-primary-dark);
+}
+
+/* Loading Spinner */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .container {
+    max-width: 100%;
+  }
+  
+  .text-h1 {
+    font-size: 28px;
+  }
+}
