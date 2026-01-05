@@ -172,4 +172,54 @@ Be specific, actionable, and supportive."""
         "supplements": ["vitamin D", "omega-3"],
         "general_tips": ["sleep 7-9h", "stay hydrated"]
     }
+
+
+def generate_friendly_message(user_message: str, profile: dict | None = None) -> dict:
+    """
+    Produce a short, friendly assistant reply. Prefer `byllm` if available,
+    otherwise fall back to the existing GenAI callers or a deterministic reply.
+    Returns a dict: {success: bool, reply: str}
+    """
+    profile = profile or {}
+    name = profile.get("name") or profile.get("user_name") or profile.get("display_name") or ""
+
+    # Build a concise prompt for the model
+    prompt_lines = [
+        "You are a friendly, supportive female-focused fitness assistant.",
+        f"Address the user by name if provided: '{name}'." if name else "Do not assume a name.",
+        "Be concise, empathetic and give one actionable suggestion or next step.",
+        "User query:",
+        user_message,
+    ]
+    prompt = "\n".join(prompt_lines)
+
+    # Try to use a `byllm` module if installed
+    try:
+        import byllm as _byllm
+    except Exception:
+        _byllm = None
+
+    if _byllm:
+        try:
+            # Attempt a couple of common byllm API patterns (best-effort)
+            if hasattr(_byllm, "generate"):
+                resp = _byllm.generate(prompt)
+                text = getattr(resp, "text", None) or str(resp)
+                return {"success": True, "reply": text}
+            if hasattr(_byllm, "chat"):
+                resp = _byllm.chat(prompt)
+                text = getattr(resp, "text", None) or str(resp)
+                return {"success": True, "reply": text}
+        except Exception:
+            # Swallow and fall through to other providers
+            pass
+
+    # Fall back to existing GenAI helper
+    text = _call_genai(prompt)
+    if text:
+        return {"success": True, "reply": text}
+
+    # Final deterministic fallback
+    reply = f"Hi {name + ',' if name else ''} thanks — I recommend a short walk, hydrate, and try a 20-30 minute strength session today. Ask me for a tailored plan.".strip()
+    return {"success": True, "reply": reply}
 # ...existing code...

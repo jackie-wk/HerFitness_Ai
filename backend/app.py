@@ -22,6 +22,11 @@ class UserProfile(BaseModel):
     cycle_length: Optional[int] = 28
 
 
+class MessageRequest(BaseModel):
+    message: str
+    profile: Optional[dict] = None
+
+
 @app.get("/")
 def index():
     return {"message": "HerFitness API running. Visit http://localhost:8000/static/index.html"}
@@ -50,3 +55,15 @@ def generate_plan(profile: UserProfile):
             "error": str(e),
             "plan": None
         }
+
+
+@app.post("/synthesize_message")
+def synthesize_message(req: MessageRequest):
+    try:
+        from .llm_service import generate_friendly_message
+        result = generate_friendly_message(req.message, req.profile or {})
+        return result
+    except ImportError as e:
+        return {"error": f"LLM service missing: {str(e)}"}
+    except Exception as e:
+        return {"error": str(e)}
